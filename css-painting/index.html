@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CSS Painting</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #2b2e34;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: monospace;
+    }
+
+    .frame {
+      position: relative;
+      width: 580px;
+      height: 480px;
+      background: #111113;
+      border: 12px solid #1c1c1f;
+      box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.7),
+        inset 0 0 10px rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .canvas {
+      position: relative;
+      width: 480px;
+      height: 380px;
+      background-color: #f7f3e3;
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.12);
+      border: 1px solid #dcd7c5;
+      overflow: hidden;
+    }
+
+    /* Base styles for background oval dots */
+    .dot-pink, .dot-blue {
+      position: absolute;
+      border-radius: 50%;
+      z-index: 1;
+    }
+
+    .dot-pink {
+      background-color: #e5a491;
+      width: 12px;
+      height: 22px;
+    }
+
+    .dot-blue {
+      background-color: #556d82;
+      width: 10px;
+      height: 18px;
+    }
+
+    .dp-1  { top: 10px; left: 10px; }
+    .dp-2  { top: 30px; left: 80px; }
+    .dp-3  { top: 60px; left: 40px; }
+    .dp-4  { top: 200px; left: 20px; }
+    .dp-5  { top: 300px; left: 80px; }
+    .dp-6  { top: 240px; left: 400px; }
+    .dp-7  { top: 240px; left: 140px; }
+    .dp-8  { top: 20px; left: 450px; }
+    .dp-9  { top: 350px; left: 370px; }
+    .dp-10 { top: 13px; left: 300px; }
+    .dp-11 { top: 130px; left: 240px; }
+    .dp-12 { top: 280px; left: 10px; }
+    .dp-13 { top: 140px; left: 460px; }
+    .dp-14 { top: 46px; left: 360px; }
+
+    .db-1  { top: 19px; left: 12%; }
+    .db-2  { top: 4%; left: 60%; }
+    .db-3  { top: 86%; left: 18%; }
+    .db-4  { top: 66%; left: 14%; }
+    .db-5  { top: 44%; left: 24%; }
+    .db-6  { top: 80%; left: 31%; }
+    .db-7  { top: 34%; left: 86%; }
+    .db-8  { top: 13%; left: 48%; }
+    .db-9  { top: 21%; left: 7%; }
+    .db-10 { top: 11%; left: 89%; }
+    .db-11 { top: 73%; left: 90%; }
+    .db-12 { top: 27%; left: 68%; }
+
+    .pig-body {
+      position: absolute;
+      bottom: -10px;
+      left: 160px;
+      width: 170px;
+      height: 230px;
+      background: #dc1d28;
+      clip-path: polygon(
+        3% 15%, 5% 0%, 100% 18%, 100% 42%, 93% 35%, 
+        100% 60%, 100% 100%, 20% 100%, 2% 35%
+      );
+      z-index: 2;
+    }
+
+    .pig-body::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 30px;
+    }
+
+    .snout {
+      position: absolute;
+      top: 152px;
+      left: 150px;
+      width: 48px;
+      height: 34px;
+      background: #e2a08e;
+      border: 2px solid #bd7665;
+      border-radius: 50% 40% 50% 60% / 60% 50% 50% 40%;
+      transform: rotate(-20deg);
+      z-index: 4;
+    }
+
+    .snout::before, .snout::after {
+      content: '';
+      position: absolute;
+      background-color: #8c4233;
+      border-radius: 50%;
+    }
+    .snout::before {
+      width: 6px;
+      height: 8px;
+      top: 13px;
+      left: 12px;
+    }
+    .snout::after {
+      width: 5px;
+      height: 7px;
+      top: 15px;
+      left: 25px;
+    }
+
+    .eye-1 {
+      position: absolute;
+      top: 190px;
+      left: 236px;
+      width: 32px;
+      height: 20px;
+      background: #25a855;
+      border-radius: 50%;
+      border: 2px solid #145e2e;
+      transform: rotate(-8deg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 4;
+    }
+
+    .eye-1::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background-color: #0b1a0e;
+      border-radius: 50%;
+    }
+
+    .eye-2 {
+      position: absolute;
+      top: 160px;
+      left: 202px;
+      width: 12px;
+      height: 12px;
+      background: #25a855;
+      border: 1.5px solid #145e2e;
+      border-radius: 50%;
+      z-index: 4;
+    }
+
+    .eye-2::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 4px;
+      height: 4px;
+      background: #000;
+      border-radius: 50%;
+    }
+
+    .mouth-line {
+      position: absolute;
+      top: 190px;
+      left: 160px;
+      width: 60px;
+      height: 80px;
+      border-left: 3px solid #6b0707;
+      border-radius: 40%;
+      transform: rotate(130deg);
+      z-index: 4;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="frame">
+    <div class="canvas">
+      <div class="dot-pink dp-1"></div>
+      <div class="dot-pink dp-2"></div>
+      <div class="dot-pink dp-3"></div>
+      <div class="dot-pink dp-4"></div>
+      <div class="dot-pink dp-5"></div>
+      <div class="dot-pink dp-6"></div>
+      <div class="dot-pink dp-7"></div>
+      <div class="dot-pink dp-8"></div>
+      <div class="dot-pink dp-9"></div>
+      <div class="dot-pink dp-10"></div>
+      <div class="dot-pink dp-11"></div>
+      <div class="dot-pink dp-12"></div>
+      <div class="dot-pink dp-13"></div>
+      <div class="dot-pink dp-14"></div>
+
+      <div class="dot-blue db-1"></div>
+      <div class="dot-blue db-2"></div>
+      <div class="dot-blue db-3"></div>
+      <div class="dot-blue db-4"></div>
+      <div class="dot-blue db-5"></div>
+      <div class="dot-blue db-6"></div>
+      <div class="dot-blue db-7"></div>
+      <div class="dot-blue db-8"></div>
+      <div class="dot-blue db-9"></div>
+      <div class="dot-blue db-10"></div>
+      <div class="dot-blue db-11"></div>
+      <div class="dot-blue db-12"></div>
+      
+      <div class="snout"></div>
+      <div class="eye-2"></div>
+      <div class="eye-1"></div>
+      <div class="mouth-line"></div>
+      <div class="pig-body"></div>
+    </div>
+  </div>
+
+</body>
+</html>
